@@ -1,0 +1,16 @@
+#!/bin/sh
+#SBATCH --time=10:00
+#SBATCH --job-name=focus
+#SBATCH --mail-type=END
+#SBATCH --mail-user=tiantian.sun@durham.ac.uk
+#SBATCH --partition=dawson
+#SBATCH --ntasks=32
+#SBATCH -o iter.log
+#SBATCH -e iter.err
+
+module use /p/focus/modules/
+module purge
+module purge
+module load focus/main
+
+mpirun -np 32 xfocus iter

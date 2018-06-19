@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+print "usage: submit_focus_jobs extension ncpu (optional: time version)"
+#print "This will submit you jobs to the most empty partition of PPPL clsuter."
+
+import sys
+import subprocess
+import os.path
+import numpy as np
+
+partitions = ['dawson', 'kruskal'] # there should be some other ways to get all the names of partitions
+idle = np.zeros(len(partitions))
+
+for i in range(len(partitions)):
+    p = subprocess.Popen('sinfo -O cpusstate -p '+partitions[i], shell=True, \
+                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p.stdout.readline() # skip one line
+    line = p.stdout.readline().split('/') # get the line contains nodes
+    idle[i] = line[1]
+
+# find the partition with the most idle nodes
+max_loc = np.argmax(idle)
+part = partitions[max_loc] 
+print 'The most empty partition on PPPL cluster is ', part, ' with ', int(idle[max_loc]), ' idle cpus.'
+
+# get command line arguments
+extension = sys.argv[1]
+ncpu = int(sys.argv[2])
+
+
+# Get computation time and executable versions
+if len(sys.argv) > 3:
+    time = sys.argv[3]
+else:
+    time = '2:00:00' # default 2 hours
+
+if len(sys.argv) > 4:
+    version = sys.argv[4]
+else:
+    version = '' # default version
+
+# check arguments
+if version[:3] == 'old':
+    input_file = extension+'.fo'
+else:
+    input_file = extension+'.input'
+
+if not os.path.isfile(input_file) :
+    sys.exit("CANNOT find the input file: "+input_file)
+assert ncpu>0
+
+# other settings
+mail_type = 'END'
+mail_user = 'tiantian.sun@durham.ac.uk'
+executable = 'xfocus'
+job_name = 'focus'
+modules = ['module use /p/focus/modules/', 'module purge','module purge', 'module load focus/'+version]
+stdout = extension+'.log'
+stderr = extension+'.err'
+command = 'mpirun -np '+str(ncpu)+' '+executable+' '+extension
+
+# write sbatch file
+with open('sbatch.'+extension, 'w') as sbatch:
+    sbatch.write('#!/bin/sh\n')
+    sbatch.write("#SBATCH --time={}\n".format(time))
+    sbatch.write("#SBATCH --job-name={}\n".format(job_name))
+    sbatch.write("#SBATCH --mail-type={}\n".format(mail_type))
+    sbatch.write("#SBATCH --mail-user={}\n".format(mail_user))
+    sbatch.write("#SBATCH --partition={}\n".format(part))
+    sbatch.write("#SBATCH --ntasks={:d}\n".format(ncpu))
+    sbatch.write("#SBATCH -o {}\n".format(stdout))
+    sbatch.write("#SBATCH -e {}\n".format(stderr))
+    sbatch.write('\n')
+    for line in modules:
+            sbatch.write(line+'\n')
+    sbatch.write('\n')
+    sbatch.write(command+'\n')
+
+# submit the job
+subprocess.call('sbatch sbatch.'+extension, shell=True)
+print 'job submitted, please check ', 'sbatch.'+extension

@@ -1,0 +1,55 @@
+--------------------------------------------------------------------------
+[[34469,1],1]: A high-performance Open MPI point-to-point messaging module
+was unable to find any relevant network interfaces:
+
+Module: OpenFabrics (openib)
+  Host: dawson035
+
+Another transport will be used instead, although this may result in
+lower performance.
+--------------------------------------------------------------------------
+ ---------------------  FOCUS v0.2.04   ------------------------------
+focus   : Begin execution with ncpu =   32
+initial : machine_prec   =  2.22045E-16 ; sqrtmachprec   =  1.49012E-08
+ -----------INPUT NAMELIST------------------------------------
+initial : Read namelist focusin from iter.input
+        :         IsQuiet =     -1 ; Output detailed information.
+        :     IsSymmetric =      0 ; No stellarator symmetry or periodicity enforced.
+        :    case_surface =      0 ; Read VMEC-like Fourier harmonics for plasma boundary.
+        :       case_init =     -1 ; Read coils in MAKEGRID format.
+        :      case_coils =      1 ; Using Fourier series as the basic representation.
+        :   case_optimize =      0 ; No optimization will be performed.
+        :     IsNormalize =      1 ; Normalization on coil parameters will be performed.
+        :    IsNormWeight =      1 ; Normalization on weights for constraints will be performed.
+        :    case_bnormal =      0 ; No normalization on Bn.
+        :     case_length =      2 ; Exponential format of length penalty.
+        :   case_postproc =      1 ; Coil evaluations would be performed.
+        : Files saving setteings: freq =    1 ; coils = 1 ; harmonics = 1 ; filaments = 0
+        : 'iter.focus' and 'focus_iter.h5' will be stored.
+        : new coils file 'iter.coils' will be updated.
+        : Bmn harmonics file 'iter.harmonics' will be updated.
+ -----------Reading surface-----------------------------------
+surface : Plasma boundary will be discretized in    256 X     64 elements.
+        : Nfou =     32 ; Nfp =      1 ; NBnf =      0 ;
+ -----------INITIALIZE COILS----------------------------------
+rdcoils : Reading coils data (MAKEGRID format) from coils.iter
+        : Read      8 coils.
+        : NFcoil =  16 ; IsVaryCurrent = 1 ; IsVaryGeometry = 0
+        :   0 fixed currents ;   8 fixed geometries.
+        : Currents   are normalized by   1.000000000000000E+02
+        : Geometries are normalized by   8.606557238759285E-01
+        : coils will be discretized in    128 segments
+focus   : Initialization took  6.91300E-02 S.
+focus   : Optimization took  7.10000E-05 S.
+ -----------POST-PROCESSING-----------------------------------
+ ----Coil diagnostic--------------------------------
+ -----------Reading Bn harmonics weights and targets---------------------------
+readbmn : NBmn =     40
+diagnos :      Bnormal ; Bmn harmonic ;    tor. flux ;  coil length ;     c-s sep. ; 
+        :  8.57210E-09 ;  5.00000E-07 ;  0.00000E+00 ;  0.00000E+00 ;  0.00000E+00 ; 
+diagnos : Maximum curvature of all the coils is  :  2.133469677723025E+01 ; at coil   7
+diagnos : Average length of the coils is         :  2.751263836828544E+01
+diagnos : The minimum coil-coil distance is      :  3.776093728101847E+00
+diagnos : The minimum coil-plasma distance is    :  1.119921879903356E+00 ; at coil   8
+focus   : Post-processing took  3.06676E-01 S.
+ -------------------------------------------------------------
